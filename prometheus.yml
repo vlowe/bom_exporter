@@ -1,0 +1,11 @@
+global:
+  scrape_interval:     10m
+  evaluation_interval: 10m
+
+scrape_configs:
+  - job_name: prometheus
+    static_configs:
+      - targets: ['localhost:9090']
+  - job_name: bom
+    static_configs:
+      - targets: ['localhost:8000']

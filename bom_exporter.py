@@ -2,8 +2,8 @@ from datetime import datetime, timezone
 import time
 import requests
 
-from prometheus_client import start_http_server, Summary
-from prometheus_client.core import GaugeMetricFamily, REGISTRY, GaugeMetricFamily
+from prometheus_client import start_http_server
+from prometheus_client.core import GaugeMetricFamily, REGISTRY
 
 urls = [
     "http://www.bom.gov.au/fwo/IDN60801/IDN60801.94767.json",
@@ -54,13 +54,12 @@ class BOMCollector:
                 .timestamp()
             )
 
-            bom_utctimestamp.add_metric([latest_obs["name"]], unix_epoch)
-            bom_air_temperature.add_metric([latest_obs["name"]], latest_obs["air_temp"])
-            bom_pressure.add_metric([latest_obs["name"]], latest_obs["press"])
-            bom_relative_humidity.add_metric(
-                [latest_obs["name"]], latest_obs["rel_hum"]
-            )
-            bom_wind_speed.add_metric([latest_obs["name"]], latest_obs["wind_spd_kmh"])
+            labels = [latest_obs["name"]]
+            bom_utctimestamp.add_metric(labels, unix_epoch)
+            bom_air_temperature.add_metric(labels, latest_obs["air_temp"])
+            bom_pressure.add_metric(labels, latest_obs["press"])
+            bom_relative_humidity.add_metric(labels, latest_obs["rel_hum"])
+            bom_wind_speed.add_metric(labels, latest_obs["wind_spd_kmh"])
 
         yield bom_utctimestamp
         yield bom_air_temperature

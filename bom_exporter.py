@@ -71,6 +71,12 @@ class BOMCollector:
             labels=["location"],
         )
 
+        bom_apparent_temperature_celsius = GaugeMetricFamily(
+            name="bom_apparent_temperature_celsius",
+            documentation="Temperature, taking into account wind+humidity, from the Bureau of Meterology",
+            labels=["location"],
+        )
+
         for url in urls:
             data = requests.get(url).json()
 
@@ -89,6 +95,8 @@ class BOMCollector:
                 labels, latest_obs["press"]*100)  # hPa to Pa
             bom_relative_humidity.add_metric(labels, latest_obs["rel_hum"])
             bom_wind_speed.add_metric(labels, latest_obs["wind_spd_kmh"])
+            bom_apparent_temperature_celsius.add_metric(
+                labels, latest_obs["apparent_t"])
 
             wind_dir = latest_obs["wind_dir"]
             if wind_dir in WIND_DIR_TO_DEGREES:
@@ -101,6 +109,7 @@ class BOMCollector:
         yield bom_relative_humidity
         yield bom_wind_speed
         yield bom_wind_direction_degrees
+        yield bom_apparent_temperature_celsius
 
 
 # Query the BOM

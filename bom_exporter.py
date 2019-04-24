@@ -10,6 +10,28 @@ urls = [
     "http://www.bom.gov.au/fwo/IDN60901/IDN60901.94768.json",
 ]
 
+WIND_DIR_TO_TURN_FRACTIONS = {
+    "N":    0/16,
+    "NNE":  1/16,
+    "NE":   2/16,
+    "NEE":  3/16,
+    "E":    4/16,
+    "SEE":  5/16,
+    "SE":   6/16,
+    "SSE":  7/16,
+    "S":    8/16,
+    "SSW":  9/16,
+    "SW":  10/16,
+    "SWW": 11/16,
+    "W":   12/16,
+    "WNW": 13/16,
+    "NW":  14/16,
+    "NNW": 15/16,
+}
+
+WIND_DIR_TO_DEGREES = {dir: fraction*360 for dir,
+                       fraction in WIND_DIR_TO_TURN_FRACTIONS.items()}
+
 
 class BOMCollector:
     def collect(self):
@@ -43,6 +65,12 @@ class BOMCollector:
             labels=["location"],
         )
 
+        bom_wind_direction_degrees = GaugeMetricFamily(
+            name="bom_wind_direction_degrees",
+            documentation="Wind direction (degrees from true North) from the Bureau of Meterology",
+            labels=["location"],
+        )
+
         for url in urls:
             data = requests.get(url).json()
 
@@ -61,11 +89,17 @@ class BOMCollector:
             bom_relative_humidity.add_metric(labels, latest_obs["rel_hum"])
             bom_wind_speed.add_metric(labels, latest_obs["wind_spd_kmh"])
 
+            wind_dir = latest_obs["wind_dir"]
+            if wind_dir in WIND_DIR_TO_DEGREES:
+                bom_wind_direction_degrees.add_metric(
+                    labels, WIND_DIR_TO_DEGREES[wind_dir])
+
         yield bom_utctimestamp
         yield bom_air_temperature
         yield bom_pressure
         yield bom_relative_humidity
         yield bom_wind_speed
+        yield bom_wind_direction_degrees
 
 
 # Query the BOM

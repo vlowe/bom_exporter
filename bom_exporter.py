@@ -47,8 +47,8 @@ class BOMCollector:
             labels=["location"],
         )
 
-        bom_pressure = GaugeMetricFamily(
-            name="bom_pressure",
+        bom_pressure_pascals = GaugeMetricFamily(
+            name="bom_pressure_pascals",
             documentation="Pressure from the Bureau of Meterology",
             labels=["location"],
         )
@@ -85,7 +85,8 @@ class BOMCollector:
             labels = [latest_obs["name"]]
             bom_utctimestamp.add_metric(labels, unix_epoch)
             bom_air_temperature.add_metric(labels, latest_obs["air_temp"])
-            bom_pressure.add_metric(labels, latest_obs["press"])
+            bom_pressure_pascals.add_metric(
+                labels, latest_obs["press"]*100)  # hPa to Pa
             bom_relative_humidity.add_metric(labels, latest_obs["rel_hum"])
             bom_wind_speed.add_metric(labels, latest_obs["wind_spd_kmh"])
 
@@ -96,7 +97,7 @@ class BOMCollector:
 
         yield bom_utctimestamp
         yield bom_air_temperature
-        yield bom_pressure
+        yield bom_pressure_pascals
         yield bom_relative_humidity
         yield bom_wind_speed
         yield bom_wind_direction_degrees

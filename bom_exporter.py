@@ -33,6 +33,8 @@ WIND_DIR_TO_DEGREES = {dir: fraction*360 for dir,
                        fraction in WIND_DIR_TO_TURN_FRACTIONS.items()}
 
 
+session = requests.Session()
+
 class BOMCollector:
     def collect(self):
         bom_utctimestamp = GaugeMetricFamily(
@@ -78,7 +80,7 @@ class BOMCollector:
         )
 
         for url in urls:
-            data = requests.get(url).json()
+            data = session.get(url).json()
 
             latest_obs = data["observations"]["data"][0]
 

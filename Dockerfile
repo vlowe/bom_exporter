@@ -1,11 +1,16 @@
 # This can compile fine on my Mac x86_64 machine. Maybe Docker's virtualizing it?
 
-FROM arm32v6/alpine
+FROM balenalib/raspberrypi3-python:3
 
-RUN apk update && apk add python3
-RUN python3 -m ensurepip && \
-    rm -r /usr/lib/python*/ensurepip
-RUN python3 -m pip install prometheus_client requests
+# https://www.balena.io/docs/reference/base-images/base-images/#building-arm-containers-on-x86-machines
+RUN [ "cross-build-start" ]
+
+# RUN apt-get update && apt-get install python3-pip
+RUN python -m pip install prometheus_client requests
+
+# https://www.balena.io/docs/reference/base-images/base-images/#building-arm-containers-on-x86-machines
+RUN [ "cross-build-end" ]
+
 COPY bom_exporter.py /root
 EXPOSE 8000
 ENTRYPOINT ["python3", "/root/bom_exporter.py"]

@@ -1,3 +1,5 @@
+# This can compile fine on my Mac x86_64 machine. Maybe Docker's virtualizing it?
+
 FROM arm32v6/alpine
 
 RUN apk update && apk add python3

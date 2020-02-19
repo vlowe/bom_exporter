@@ -1,4 +1,4 @@
-# This can compile fine on my Mac x86_64 machine. Maybe Docker's virtualizing it?
+# This can compile fine on my Mac x86_64 machine, and on Cloud Build thanks to cross-build-start.
 
 FROM balenalib/raspberrypi3-python:3
 

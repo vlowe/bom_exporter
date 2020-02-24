@@ -9,3 +9,24 @@ docker run -p 8000:8000 bom_exporter:latest
 
 # To get just the docker image
 Visit the docker image [here](https://hub.docker.com/r/vickilowe/bom_exporter)
+
+Example `docker-compose.yml` config:
+
+```yml
+version: '3.4'
+services:
+  rtl_433_prometheus:
+    image: markhnsn/rtl_433_prometheus
+    restart: always
+    ports:
+    - "8000:8000"
+```
+
+Example `prometheus.yml`:
+
+```yml
+scrape_configs:
+  - job_name: 'bom_exporter'
+      static_configs:
+            - targets: ['hostname:8000']
+```

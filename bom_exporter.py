@@ -96,7 +96,8 @@ class BOMCollector:
             bom_pressure_pascals.add_metric(
                 labels, latest_obs["press"]*100)  # hPa to Pa
             bom_relative_humidity.add_metric(labels, latest_obs["rel_hum"])
-            bom_wind_speed.add_metric(labels, latest_obs["wind_spd_kmh"])
+            if latest_obs["wind_spd_kmh"] != None:
+                bom_wind_speed.add_metric(labels, latest_obs["wind_spd_kmh"])
             bom_apparent_temperature_celsius.add_metric(
                 labels, latest_obs["apparent_t"])
 

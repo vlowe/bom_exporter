@@ -15,9 +15,13 @@ Example `docker-compose.yml` config:
 ```yml
 version: '3.4'
 services:
-  rtl_433_prometheus:
-    image: markhnsn/rtl_433_prometheus
+  bom_exporter:
+    image: vickilowe/bom_exporter
     restart: always
+    command: [
+      "--urls",
+      "http://www.bom.gov.au/fwo/IDN60801/IDN60801.94767.json",
+    ]
     ports:
     - "8000:8000"
 ```
@@ -27,6 +31,6 @@ Example `prometheus.yml`:
 ```yml
 scrape_configs:
   - job_name: 'bom_exporter'
-      static_configs:
-            - targets: ['hostname:8000']
+    static_configs:
+      - targets: ['hostname:8000']
 ```

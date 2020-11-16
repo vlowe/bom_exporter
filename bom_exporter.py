@@ -1,14 +1,15 @@
 from datetime import datetime, timezone
 import time
 import requests
+import argparse
 
 from prometheus_client import start_http_server
 from prometheus_client.core import GaugeMetricFamily, REGISTRY
 
-urls = [
-    "http://www.bom.gov.au/fwo/IDN60801/IDN60801.94767.json",
-    "http://www.bom.gov.au/fwo/IDN60901/IDN60901.94768.json",
-]
+parser = argparse.ArgumentParser(description='Bureau of Meteorology Prometheus Exporter')
+parser.add_argument('--urls', nargs='+', type=str,
+                    help='One or more BoM Observation JSON URLs, e.g. http://www.bom.gov.au/fwo/IDN60801/IDN60801.94765.json')
+args = parser.parse_args()
 
 WIND_DIR_TO_TURN_FRACTIONS = {
     "N":    0/16,
@@ -79,7 +80,7 @@ class BOMCollector:
             labels=["location"],
         )
 
-        for url in urls:
+        for url in args.urls:
             data = session.get(url).json()
 
             latest_obs = data["observations"]["data"][0]

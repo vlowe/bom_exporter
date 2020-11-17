@@ -93,14 +93,18 @@ class BOMCollector:
 
             labels = [latest_obs["name"]]
             bom_utctimestamp.add_metric(labels, unix_epoch)
-            bom_air_temperature.add_metric(labels, latest_obs["air_temp"])
-            bom_pressure_pascals.add_metric(
-                labels, latest_obs["press"]*100)  # hPa to Pa
-            bom_relative_humidity.add_metric(labels, latest_obs["rel_hum"])
+            if latest_obs["air_temp"] != None:
+                bom_air_temperature.add_metric(labels, latest_obs["air_temp"])
+            if latest_obs["press"] != None:
+                bom_pressure_pascals.add_metric(
+                    labels, latest_obs["press"]*100)  # hPa to Pa
+            if latest_obs["rel_hum"] != None:
+                bom_relative_humidity.add_metric(labels, latest_obs["rel_hum"])
             if latest_obs["wind_spd_kmh"] != None:
                 bom_wind_speed.add_metric(labels, latest_obs["wind_spd_kmh"])
-            bom_apparent_temperature_celsius.add_metric(
-                labels, latest_obs["apparent_t"])
+            if latest_obs["apparent_t"] != None:
+                bom_apparent_temperature_celsius.add_metric(
+                    labels, latest_obs["apparent_t"])
 
             wind_dir = latest_obs["wind_dir"]
             if wind_dir in WIND_DIR_TO_DEGREES:
